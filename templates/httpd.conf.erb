@@ -1,0 +1,45 @@
+# These lines are handled by the mod_passenger rpm
+#LoadModule passenger_module /usr/lib/ruby/gems/1.8/gems/passenger-3.0.17/ext/apache2/mod_passenger.so
+#PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-3.0.17
+#PassengerRuby /usr/bin/ruby
+
+# you probably want to tune these settings
+PassengerHighPerformance on
+PassengerMaxPoolSize 12
+PassengerPoolIdleTime 1500
+# PassengerMaxRequests 1000
+PassengerStatThrottleRate 120
+RackAutoDetect Off
+RailsAutoDetect Off
+
+Listen 8140
+
+<VirtualHost *:8140>
+    SSLEngine on
+    SSLProtocol -ALL +SSLv3 +TLSv1
+    SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:-LOW:-SSLv2:-EXP
+
+    SSLCertificateFile      /var/lib/puppet/ssl/certs/<%= fqdn %>.pem
+    SSLCertificateKeyFile   /var/lib/puppet/ssl/private_keys/<%= fqdn %>.pem
+    SSLCertificateChainFile /var/lib/puppet/ssl/ca/ca_crt.pem
+    SSLCACertificateFile    /var/lib/puppet/ssl/ca/ca_crt.pem
+    # If Apache complains about invalid signatures on the CRL, you can try disabling
+    # CRL checking by commenting the next line, but this is not recommended.
+    SSLCARevocationFile     /var/lib/puppet/ssl/ca/ca_crl.pem
+    SSLVerifyClient optional
+    SSLVerifyDepth  1
+    SSLOptions +StdEnvVars
+
+    RequestHeader set X-SSL-Subject %{SSL_CLIENT_S_DN}e
+    RequestHeader set X-Client-DN %{SSL_CLIENT_S_DN}e
+    RequestHeader set X-Client-Verify %{SSL_CLIENT_VERIFY}e
+
+    DocumentRoot <%= rack_base_dir %>/rack/public/
+    RackBaseURI /
+    <Directory <%= rack_base_dir %>/rack/>
+            Options None
+            AllowOverride None
+            Order allow,deny
+            allow from all
+    </Directory>
+</VirtualHost>
