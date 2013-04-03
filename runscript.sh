@@ -28,6 +28,6 @@
 #gpgcheck=0
 #EOM
 
-puppet apply --debug --verbose --modulepath ../ manifests/puppetbootstrap3.pp -e "include puppetbootstrap3::puppetbootstrap"
+puppet apply --debug --verbose --modulepath ../ manifests/puppetbootstrap.pp -e "include puppetbootstrap::puppetbootstrap"
 
 

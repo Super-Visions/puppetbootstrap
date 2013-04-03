@@ -6,7 +6,7 @@
 # Install puppetmaster, apache2 and Phusion Passenger
 # Set up the directories, configure apache and Passenger
 # and ensure that the apache service is running
-class puppetbootstrap3::puppetbootstrap {
+class puppetbootstrap::puppetbootstrap {
 
   #$rack_base_dir = '/etc/puppet'
   $rack_base_dir = '/etc/puppet-rack'
@@ -58,13 +58,13 @@ class puppetbootstrap3::puppetbootstrap {
     }
     file { "${rack_base_dir}/rack/config.ru":
         ensure => present,
-        source => 'puppet:///modules/puppetbootstrap3/config.ru',
+        source => 'puppet:///modules/puppetbootstrap/config.ru',
         mode   => '0644',
         owner  => puppet,
         group  => root,
     }
 
-    $http_conf_content = template('puppetbootstrap3/httpd.conf.erb')
+    $http_conf_content = template('puppetbootstrap/httpd.conf.erb')
 
     file { '/etc/httpd/conf.d/puppetmasterd.conf':
         ensure  => present,
@@ -75,10 +75,16 @@ class puppetbootstrap3::puppetbootstrap {
         require => [File["${rack_base_dir}/rack/config.ru"], File["${rack_base_dir}/rack/public"], Package['httpd'], Package[$passenger]],
         notify  => Service['httpd'],
     }
+  
+    exec { 'start and stop master':
+      command => 'service puppetmaster start; service puppetmaster stop',
+    }
+
     service { 'httpd':
         ensure    => 'running',
         enable    => true,
-        hasstatus => false
+        hasstatus => false,
+        require   => Exec['start and stop master'],
     }
 
     file { [ '/etc/facter', '/etc/facter/facts.d' ]:
