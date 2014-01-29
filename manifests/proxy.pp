@@ -1,18 +1,32 @@
-class puppetbootstrap::proxy ( $host, $port = 80, $user = undef, $pass = undef ) {
+class puppetbootstrap::proxy ( $host, $port = 80, $proto = 'http', $user = undef, $pass = undef, $ensure = 'present', $noproxy = undef ) {
 
   file { '/etc/profile.d/proxy.sh':
-    ensure  => present,
-    content => "export http_proxy=http://${host}:${port}\nexport https_proxy=http://${host}:${port}",
+    ensure  => $ensure,
+    content => "export http_proxy=${proto}://${host}:${port}\nexport https_proxy=${proto}://${host}:${port}",
   }
-  #  file { '/etc/yum.conf':
-  #  ensure  => present,
-  #  content => template("puppetbootstrap/yum.conf.erb"),
-  #  #source  => 'puppet:///modules/puppetbootstrap/yum.conf',
-  #}
-  exec { "export http_proxy=http://${host}:${port}": 
+
+  if $ensure == 'present' {
+    $proxy_action = 'export'
+  } else {
+    $proxy_action = 'unset'
+  }
+  exec { "${proxy_action} http_proxy=${proto}://${host}:${port}": 
     provider => shell,
   }
-  exec { "export https_proxy=http://${host}:${port}":
+  exec { "${proxy_action} https_proxy=${proto}://${host}:${port}":
+    provider => shell,
+  }
+
+  # export export no_proxy=.mobistar.be
+  if $noproxy {
+    $noproxy_action = 'export'
+  } else {
+    $noproxy_action = 'unset'
+  }
+  exec { "${noproxy_action} no_proxy=${noproxy}": 
+    provider => shell,
+  }
+  exec { "${noproxy_action} no_proxy=${noproxy}":
     provider => shell,
   }
 
