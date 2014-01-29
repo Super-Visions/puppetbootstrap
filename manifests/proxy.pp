@@ -2,7 +2,7 @@ class puppetbootstrap::proxy ( $host, $port = 80, $proto = 'http', $user = undef
 
   file { '/etc/profile.d/proxy.sh':
     ensure  => $ensure,
-    content => "export http_proxy=${proto}://${host}:${port}\nexport https_proxy=${proto}://${host}:${port}\nexport noproxy=${noproxy}",
+    content => "export http_proxy=${proto}://${host}:${port}\nexport https_proxy=${proto}://${host}:${port}\nexport no_proxy=${noproxy}",
   }
 
 #  if $ensure == 'present' {
