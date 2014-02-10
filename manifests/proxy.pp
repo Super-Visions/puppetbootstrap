@@ -1,4 +1,12 @@
-class puppetbootstrap::proxy ( $host, $port = 80, $proto = 'http', $user = undef, $pass = undef, $ensure = 'present', $noproxy = undef ) {
+class puppetbootstrap::proxy ( 
+  $host, 
+  $port = 80, 
+  $proto = 'http', 
+  $user = undef, 
+  $pass = undef, 
+  $ensure = 'present', 
+  $noproxy = undef 
+) {
 
   file { '/etc/profile.d/proxy.sh':
     ensure  => $ensure,
@@ -7,24 +15,24 @@ class puppetbootstrap::proxy ( $host, $port = 80, $proto = 'http', $user = undef
 
   if $ensure == 'present' {
     $proxy_action = 'export'
+    exec { "${proxy_action} http_proxy=${proto}://${host}:${port}": 
+      provider => shell,
+    }
+    exec { "${proxy_action} https_proxy=${proto}://${host}:${port}":
+      provider => shell,
+    }
   } else {
     $proxy_action = 'unset'
-  }
-  exec { "${proxy_action} http_proxy=${proto}://${host}:${port}": 
-    provider => shell,
-  }
-  exec { "${proxy_action} https_proxy=${proto}://${host}:${port}":
-    provider => shell,
   }
 
   # export export no_proxy=.mobistar.be
   if $noproxy {
     $noproxy_action = 'export'
+    exec { "${noproxy_action} no_proxy=${noproxy}": 
+      provider => shell,
+    }
   } else {
     $noproxy_action = 'unset'
-  }
-  exec { "${noproxy_action} no_proxy=${noproxy}": 
-    provider => shell,
   }
 
 }
