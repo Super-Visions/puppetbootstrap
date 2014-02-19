@@ -25,12 +25,18 @@ class puppetbootstrap::proxy (
   } else {
     $proxy_action = 'unset'
     $augeas_action = 'rm'
+    exec { "/usr/bin/git config --global --unset http.proxy":
+      provider => shell,
+    }
+    exec { "/usr/bin/git config --global --unset https.proxy":
+      provider => shell,
+    }
   }
   
   augeas { "gitproxy":
     context => "/files/home/git/.gitconfig/http",
     changes => [
-      "${::augeas_action} proxy '${proto}://${host}:${port}'",
+      "${augeas_action} proxy '${proto}://${host}:${port}'",
     ],
   }
 
