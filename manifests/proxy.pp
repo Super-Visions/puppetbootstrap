@@ -39,8 +39,8 @@ class puppetbootstrap::proxy (
     context => "/files/etc/environament",
     changes => [
       "set http_proxy '${proto}://${host}:${port}'",
-      "set https_proxy=${proto}://${host}:${port}'",
-      "set no_proxy=${noproxy}",
+      "set https_proxy '${proto}://${host}:${port}'",
+      "set no_proxy '${noproxy}'",
     ],
   }
 
