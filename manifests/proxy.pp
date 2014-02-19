@@ -41,6 +41,7 @@ class puppetbootstrap::proxy (
       "set http_proxy '${proto}://${host}:${port}'",
       "set https_proxy=${proto}://${host}:${port}'",
       "set no_proxy=${noproxy}",
-    ]
+    ],
+  }
 
 }
