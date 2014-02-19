@@ -35,4 +35,12 @@ class puppetbootstrap::proxy (
     $noproxy_action = 'unset'
   }
 
+  augeas { "proxyenv" :
+    context => "/files/etc/environament",
+    changes => [
+      "set http_proxy '${proto}://${host}:${port}'",
+      "set https_proxy=${proto}://${host}:${port}'",
+      "set no_proxy=${noproxy}",
+    ]
+
 }
