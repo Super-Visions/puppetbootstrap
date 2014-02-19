@@ -36,7 +36,7 @@ class puppetbootstrap::proxy (
   augeas { "gitproxy":
     context => "/files/home/git/.gitconfig/http",
     changes => [
-      "${augeas_action" proxy '${proto}://${host}:${port}'",
+      "${augeas_action} proxy '${proto}://${host}:${port}'",
     ],
   }
 
