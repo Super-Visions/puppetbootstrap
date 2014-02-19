@@ -36,7 +36,7 @@ class puppetbootstrap::proxy (
   }
 
   augeas { "proxyenv" :
-    context => "/files/etc/environament",
+    context => "/files/etc/environment",
     changes => [
       "set http_proxy '${proto}://${host}:${port}'",
       "set https_proxy '${proto}://${host}:${port}'",
