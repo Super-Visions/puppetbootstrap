@@ -14,8 +14,8 @@ class puppetbootstrap::proxy (
   }
 
   if $ensure == 'present' {
-    # $proxy_action = 'export'
-    # $augeas_action = 'set'
+    $proxy_action = 'export'
+    $augeas_action = 'set'
     # exec { "${proxy_action} http_proxy=${proto}://${host}:${port}":
     #   provider => shell,
     # }
@@ -44,7 +44,7 @@ class puppetbootstrap::proxy (
 
   # export export no_proxy=.mobistar.be
   if $noproxy {
-    # $noproxy_action = 'export'
+    $noproxy_action = 'export'
     # exec { "${noproxy_action} no_proxy=${noproxy}":
     #   provider => shell,
     # }
